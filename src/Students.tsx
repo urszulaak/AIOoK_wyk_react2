@@ -1,9 +1,8 @@
-
-
 import { useState } from 'react';
 import Student from './Student';
 import { StudentClass, StudentType } from './types/Student';
 import AddStudent from './AddStudent';
+import EditStudent from './EditStudent';
 
 
 export default function Students() {
@@ -14,6 +13,7 @@ export default function Students() {
     new StudentClass('Adrian', 'Duda', 156789, new Date('2001-04-01'))
   ]);
   const [showAddForm,changeValue]=useState(false);
+  const [editedStudent, changeEditStudentData] = useState<StudentClass | null>(null);
   
   const addNewStudent=(student:StudentClass)=>{
     changeValue(false)
@@ -23,13 +23,25 @@ export default function Students() {
     students.push(student)
     updateList(students)
   }
+
+  const updateStudent = (updatedStudent: StudentClass): void => {
+    updateList((prev) =>
+      prev.map((s) => (s.Index_nr === updatedStudent.Index_nr ? updatedStudent : s))
+    );
+    changeEditStudentData(null);
+  };
+
+  const cancelEdit = (): void => {
+    changeEditStudentData(null);
+  };
+
   return (
     
     <>
       {listTitle}
       {studentList.length>0 &&
       <ul>
-      {studentList.map((el) => {return <li key={el.Index_nr}><Student student={el}/></li>
+      {studentList.map((el) => {return <li key={el.Index_nr}><Student student={el}/><button onClick={() => changeEditStudentData(el)}>Edit</button></li>
 })}
 
       </ul>}
@@ -38,6 +50,8 @@ export default function Students() {
       <button onClick={()=>changeValue(true)}>Add student</button>
 }
 {showAddForm && <AddStudent addFn={addNewStudent}/>}
+{editedStudent && (<EditStudent student={editedStudent} editFn={updateStudent} cancelFn={cancelEdit}/>
+      )}
     </>
   );
 }
