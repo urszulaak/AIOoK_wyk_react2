@@ -23,10 +23,7 @@ export default function EditStudent(props: StudentPropsType): React.ReactElement
         const { name, value } = e.target;
         
         changeEditStudentData(prev => ({
-          ...prev,
-          [name]: name === 'index_nr' 
-            ? (value === '' ? 0 : parseInt(value, 10))
-            : value
+          ...prev, value
         }));
       };
 
